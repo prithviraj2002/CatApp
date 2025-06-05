@@ -9,18 +9,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.catapp.domain.models.CatBreed
 
 @Composable
-fun CatBreedImage(refId: String, onClick: () -> Unit) {
+fun CatBreedImage(catBreed: CatBreed, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -31,10 +35,10 @@ fun CatBreedImage(refId: String, onClick: () -> Unit) {
             }
     ) {
         AsyncImage(
-            model = getCatImageUrl(refId),
+            model = getCatImageUrl(catBreed.referenceImageId),
             contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
+            modifier = Modifier.height(200.dp),
+            contentScale = ContentScale.FillHeight
         )
     }
 }
@@ -46,21 +50,19 @@ fun getCatImageUrl(id: String): String {
 @Composable
 fun CatDetailSheet(breed: CatBreed) {
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(breed.name, style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold))
+        Box(modifier = Modifier.height(12.dp))
+        Divider()
+        Box(modifier = Modifier.height(12.dp))
         AsyncImage(
+            modifier = Modifier.height(200.dp)
+                .fillMaxWidth(),
             model = getCatImageUrl(breed.referenceImageId),
             contentDescription = "Cat image"
         )
-        Row(modifier = Modifier.fillMaxWidth()) {
-            Box(modifier = Modifier.width(4.dp))
-            Text(breed.name)
-            Box(modifier = Modifier.width(4.dp))
-            Text(breed.origin)
-            Box(modifier = Modifier.width(4.dp))
-            Text(breed.countryCode)
-            Box(modifier = Modifier.width(4.dp))
-        }
         Box(modifier = Modifier.height(12.dp))
         Text(breed.description)
         Text(breed.wikipediaUrl)
     }
 }
+

@@ -34,6 +34,8 @@ class ExploreViewModel @Inject constructor(
     private val _catBreedData = MutableStateFlow(CatBreedResponse());
     val catBreedData = _catBreedData.asStateFlow()
 
+    val catBreedOpenData = _catBreedData.value
+
     init {
         getCatBreeds()
     }

@@ -1,9 +1,12 @@
 package com.example.catapp.presentation.explore.view
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -29,6 +32,8 @@ import com.example.catapp.presentation.components.CatBreedImage
 import com.example.catapp.presentation.components.CatDetailSheet
 import com.example.catapp.presentation.explore.ViewModel.ExploreViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.catapp.presentation.components.ErrorState
+import com.example.catapp.presentation.components.LoadingState
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,15 +53,11 @@ fun ExploreView(
 
     when {
         state.isLoading -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
+            LoadingState()
         }
 
         state.e != null -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("An exception occurred: ${state.e}")
-            }
+            ErrorState("An exception occurred: ${state.e}")
         }
 
         else -> {
@@ -68,12 +69,7 @@ fun ExploreView(
             else {
                 Scaffold(
                     topBar = {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            TopAppBar(
-                                title = {
-                                    Text("Explore cats by breed")
-                                }
-                            )
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                             SearchBar(
                                 inputField = {
                                     SearchBarDefaults.InputField(
@@ -93,35 +89,46 @@ fun ExploreView(
                             ) {
                                 val searchState by viewModel.catSearchResponse.collectAsState()
 
-                                when{
+                                when {
                                     searchState.isLoading -> {
-                                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                        Box(
+                                            modifier = Modifier.fillMaxSize(),
+                                            contentAlignment = Alignment.Center
+                                        ) {
                                             CircularProgressIndicator()
                                         }
                                     }
 
                                     searchState.e != null -> {
-                                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                        Box(
+                                            modifier = Modifier.fillMaxSize(),
+                                            contentAlignment = Alignment.Center
+                                        ) {
                                             Text("An exception occurred: ${searchState.e}")
                                         }
                                     }
 
                                     viewModel.q.value.isEmpty() -> {
-                                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                        Box(
+                                            modifier = Modifier.fillMaxSize(),
+                                            contentAlignment = Alignment.Center
+                                        ) {
                                             Text("Try searching Persian")
                                         }
                                     }
 
                                     else -> {
-                                        if(searchState.data.isEmpty()){
-                                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                        if (searchState.data.isEmpty()) {
+                                            Box(
+                                                modifier = Modifier.fillMaxSize(),
+                                                contentAlignment = Alignment.Center
+                                            ) {
                                                 Text("No cats found")
                                             }
-                                        }
-                                        else{
+                                        } else {
                                             LazyColumn(modifier = Modifier.fillMaxSize()) {
-                                                items(searchState.data.size){ item ->
-                                                    CatBreedImage(searchState.data[item].referenceImageId) { }
+                                                items(searchState.data.size) { item ->
+                                                    //                                                    CatBreedImage(searchState.data[item]) { }
                                                 }
                                             }
                                         }
@@ -141,18 +148,15 @@ fun ExploreView(
                         }
                     ) {
                         LazyVerticalGrid(
-                            columns = GridCells.Adaptive(120.dp),
-                            contentPadding = PaddingValues(
-                                start = 12.dp,
-                                top = 16.dp,
-                                end = 12.dp,
-                                bottom = 16.dp
-                            ),
-                            modifier = Modifier.padding(10.dp)
+                            columns = GridCells.Fixed(3),
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(12.dp),
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
                         ) {
                             items(state.data.size) { item ->
                                 CatBreedImage(
-                                    state.data[item].referenceImageId
+                                    state.data[item],
                                 ) {
                                     viewModel.showSheet.value = true
                                     viewModel.selectedBreed.value = state.data[item]
