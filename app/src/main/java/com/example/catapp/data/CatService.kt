@@ -11,11 +11,11 @@ interface CatInterface {
 
     @Headers("x-api-key: ${Endpoints.apiKey}")
     @GET("images/search?")
-    suspend fun getCatImages(@Query("limit") limit: Int = 10): List<CatImage>
+    suspend fun getCatImages(@Query("limit") limit: Int = 21): List<CatImage>
 
     @Headers("x-api-key: ${Endpoints.apiKey}")
     @GET("breeds?")
-    suspend fun getCatBreeds(@Query("limit") limit: Int = 10): List<CatBreed>
+    suspend fun getCatBreeds(@Query("limit") limit: Int = 21): List<CatBreed>
 
     @Headers("x-api-key: ${Endpoints.apiKey}")
     @GET("breeds/search?")

@@ -59,14 +59,7 @@ data class CatBreedSearch(
     val hypoallergenic: Long,
     @SerializedName("reference_image_id")
     val referenceImageId: String,
-    val image: Image,
-)
-
-data class Image(
-    val id: String,
-    val width: Long,
-    val height: Long,
-    val url: String,
+    val image: CatImage,
 )
 
 

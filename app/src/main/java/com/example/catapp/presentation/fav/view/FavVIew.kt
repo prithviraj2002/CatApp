@@ -8,20 +8,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.example.catapp.presentation.fav.ViewModel.FavViewModel
 
 @Composable
 fun FavView(
     viewModel: FavViewModel
 ){
-    Scaffold() {
-            innerPadding ->
-        Column(
-            modifier = Modifier.padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text("Welcome home")
-        }
+    Column(
+        modifier = Modifier.padding(4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("Welcome home")
     }
 }

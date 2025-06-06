@@ -32,6 +32,9 @@ import com.example.catapp.presentation.components.CatBreedImage
 import com.example.catapp.presentation.components.CatDetailSheet
 import com.example.catapp.presentation.explore.ViewModel.ExploreViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.catapp.domain.models.CatBreed
+import com.example.catapp.presentation.components.CatDetailSearchSheet
+import com.example.catapp.presentation.components.CatSearchTile
 import com.example.catapp.presentation.components.ErrorState
 import com.example.catapp.presentation.components.LoadingState
 
@@ -67,8 +70,18 @@ fun ExploreView(
                 }
             }
             else {
-                Scaffold(
-                    topBar = {
+                PullToRefreshBox(
+                    isRefreshing = isRefreshing.value,
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .fillMaxSize(),
+                    onRefresh = {
+                        isRefreshing.value = true
+                        viewModel.getCatBreeds()
+                        isRefreshing.value = false
+                    }
+                ) {
+                    Column {
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                             SearchBar(
                                 inputField = {
@@ -91,21 +104,11 @@ fun ExploreView(
 
                                 when {
                                     searchState.isLoading -> {
-                                        Box(
-                                            modifier = Modifier.fillMaxSize(),
-                                            contentAlignment = Alignment.Center
-                                        ) {
-                                            CircularProgressIndicator()
-                                        }
+                                        LoadingState()
                                     }
 
                                     searchState.e != null -> {
-                                        Box(
-                                            modifier = Modifier.fillMaxSize(),
-                                            contentAlignment = Alignment.Center
-                                        ) {
-                                            Text("An exception occurred: ${searchState.e}")
-                                        }
+                                        ErrorState("Something went wrong")
                                     }
 
                                     viewModel.q.value.isEmpty() -> {
@@ -128,7 +131,12 @@ fun ExploreView(
                                         } else {
                                             LazyColumn(modifier = Modifier.fillMaxSize()) {
                                                 items(searchState.data.size) { item ->
-                                                    //                                                    CatBreedImage(searchState.data[item]) { }
+                                                    CatSearchTile(searchState.data[item]) {
+                                                        viewModel.showSheet.value = true
+                                                        viewModel.selectedSearchBreed.value =
+                                                            searchState.data[item]
+                                                        viewModel.selectedBreed.value = null
+                                                    }
                                                 }
                                             }
                                         }
@@ -136,17 +144,6 @@ fun ExploreView(
                                 }
                             }
                         }
-                    }
-                ) { innerPadding ->
-                    PullToRefreshBox(
-                        isRefreshing = isRefreshing.value,
-                        modifier = Modifier.padding(innerPadding),
-                        onRefresh = {
-                            isRefreshing.value = true
-                            viewModel.getCatBreeds()
-                            isRefreshing.value = false
-                        }
-                    ) {
                         LazyVerticalGrid(
                             columns = GridCells.Fixed(3),
                             modifier = Modifier.fillMaxSize(),
@@ -160,17 +157,22 @@ fun ExploreView(
                                 ) {
                                     viewModel.showSheet.value = true
                                     viewModel.selectedBreed.value = state.data[item]
+                                    viewModel.selectedSearchBreed.value = null
                                 }
                             }
                         }
-                        if (viewModel.showSheet.value && viewModel.selectedBreed.value != null) {
-                            ModalBottomSheet(
-                                onDismissRequest = {
-                                    viewModel.showSheet.value = false
-                                },
-                            ) {
-                                val breed = viewModel.selectedBreed.value;
-                                CatDetailSheet(breed!!)
+                    }
+                    if (viewModel.showSheet.value && (viewModel.selectedBreed.value != null || viewModel.selectedSearchBreed.value != null)) {
+                        ModalBottomSheet(
+                            onDismissRequest = {
+                                viewModel.showSheet.value = false
+                            },
+                        ) {
+                            if(viewModel.selectedBreed.value != null){
+                                CatDetailSheet(viewModel.selectedBreed.value!!)
+                            }
+                            else if(viewModel.selectedSearchBreed.value != null){
+                                CatDetailSearchSheet(viewModel.selectedSearchBreed.value!!)
                             }
                         }
                     }

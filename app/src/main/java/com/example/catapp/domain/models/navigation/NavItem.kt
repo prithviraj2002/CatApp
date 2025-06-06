@@ -1,6 +1,7 @@
 package com.example.catapp.domain.models.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
@@ -22,6 +23,11 @@ val navigationItems = listOf(
         title = "Explore",
         icon = Icons.Default.Search,
         route = Screen.Explore.route
+    ),
+    NavItem(
+        title = "Images",
+        icon = Icons.Default.AccountBox,
+        route = Screen.Funny.route
     ),
     NavItem(
         title = "Favourites",

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.catapp.data.CatInterface
 import com.example.catapp.domain.models.CatBreed
+import com.example.catapp.domain.models.CatBreedSearch
 import com.example.catapp.presentation.explore.model.CatBreedResponse
 import com.example.catapp.presentation.explore.model.CatBreedSearchResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,6 +30,7 @@ class ExploreViewModel @Inject constructor(
     val catSearchResponse = _catSearchResponse.asStateFlow()
 
     val selectedBreed = mutableStateOf<CatBreed?>(null);
+    val selectedSearchBreed = mutableStateOf<CatBreedSearch?>(null);
     val showSheet = mutableStateOf(false)
 
     private val _catBreedData = MutableStateFlow(CatBreedResponse());
