@@ -24,11 +24,15 @@ import com.example.catapp.presentation.home.model.RandomCatImageResponse
 
 @Composable
 fun RandomCatImage(
-    catImage: CatImage
+    catImage: CatImage,
+    onClick: () -> Unit
 ){
     Box(
         modifier = Modifier.height(240.dp).width(360.dp)
-            .clip(RoundedCornerShape(12.dp)),
+            .clip(RoundedCornerShape(12.dp))
+            .clickable {
+                onClick()
+            },
         contentAlignment = Alignment.Center
     ) {
         AsyncImage(

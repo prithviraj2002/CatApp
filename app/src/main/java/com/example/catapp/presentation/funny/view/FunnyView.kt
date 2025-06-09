@@ -1,5 +1,7 @@
 package com.example.catapp.presentation.funny.view
 
+import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,6 +16,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -22,7 +25,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.example.catapp.presentation.components.ErrorState
+import com.example.catapp.presentation.components.FunnyCatImagesDialog
 import com.example.catapp.presentation.components.LoadingState
+import com.example.catapp.presentation.components.TrendingCatImagesDialog
 import com.example.catapp.presentation.funny.ViewModel.FunnyViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,12 +41,20 @@ fun FunnyView(
         mutableStateOf(false)
     }
 
+    val showDialog = remember{
+        mutableStateOf(false)
+    }
+    val imageIndex = remember{
+        mutableIntStateOf(0)
+    }
+
     when{
         imageState.isLoading -> {
             LoadingState()
         }
         imageState.error != null -> {
             ErrorState("Something went wrong")
+            Log.e("funny image error", imageState.error.toString())
         }
         else -> {
             if(imageState.imageData.isEmpty()){
@@ -69,6 +82,10 @@ fun FunnyView(
                                     .fillMaxWidth()
                                     .height(200.dp)
                                     .clip(RoundedCornerShape(12.dp))
+                                    .clickable {
+                                        showDialog.value = true
+                                        imageIndex.intValue = item
+                                    }
                             ) {
                                 AsyncImage(
                                     model = imageState.imageData[item].url,
@@ -82,5 +99,13 @@ fun FunnyView(
                 }
             }
         }
+    }
+
+    if(showDialog.value){
+        FunnyCatImagesDialog(
+            showDialog,
+            imageState,
+            imageIndex.intValue
+        )
     }
 }

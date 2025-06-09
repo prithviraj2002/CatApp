@@ -23,6 +23,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -33,6 +34,7 @@ import com.example.catapp.presentation.components.CatDetailSheet
 import com.example.catapp.presentation.explore.ViewModel.ExploreViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.catapp.domain.models.CatBreed
+import com.example.catapp.presentation.components.CatBreedDialog
 import com.example.catapp.presentation.components.CatDetailSearchSheet
 import com.example.catapp.presentation.components.CatSearchTile
 import com.example.catapp.presentation.components.ErrorState
@@ -52,6 +54,13 @@ fun ExploreView(
 
     val isRefreshing = remember {
         mutableStateOf(false)
+    }
+
+    val showDialog = remember{
+        mutableStateOf(false)
+    }
+    val breedIndex = remember{
+        mutableIntStateOf(0)
     }
 
     when {
@@ -155,9 +164,11 @@ fun ExploreView(
                                 CatBreedImage(
                                     state.data[item],
                                 ) {
-                                    viewModel.showSheet.value = true
-                                    viewModel.selectedBreed.value = state.data[item]
-                                    viewModel.selectedSearchBreed.value = null
+                                    breedIndex.intValue = item
+                                    showDialog.value = true
+//                                    viewModel.showSheet.value = true
+//                                    viewModel.selectedBreed.value = state.data[item]
+//                                    viewModel.selectedSearchBreed.value = null
                                 }
                             }
                         }
@@ -179,5 +190,13 @@ fun ExploreView(
                 }
             }
         }
+    }
+
+    if(showDialog.value){
+        CatBreedDialog(
+            showDialog,
+            state,
+            breedIndex.intValue
+            )
     }
 }

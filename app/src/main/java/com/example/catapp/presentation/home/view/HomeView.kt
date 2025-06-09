@@ -16,25 +16,49 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.catapp.presentation.components.CatBreedDialog
 import com.example.catapp.presentation.components.CatBreedImage
 import com.example.catapp.presentation.components.RandomCatImage
 import com.example.catapp.presentation.components.RandomCatImageComponent
+import com.example.catapp.presentation.components.RandomCatImageDialog
+import com.example.catapp.presentation.components.TrendingCatImagesDialog
 import com.example.catapp.presentation.explore.ViewModel.ExploreViewModel
 import com.example.catapp.presentation.home.ViewModel.HomeViewModel
 
 @Composable
 fun HomeView(
     viewModel: HomeViewModel,
-    exploreViewModel: ExploreViewModel
+    exploreViewModel: ExploreViewModel,
 ){
     val catBreedState by exploreViewModel.catBreedData.collectAsState()
     val randomCatImageState by viewModel.randomCatImage.collectAsState()
     val randomCatImageListState by viewModel.randomCatImageList.collectAsState()
+
+    val showDialog = remember{
+        mutableStateOf(false)
+    }
+
+    val showTrendingImageDialog = remember{
+        mutableStateOf(false)
+    }
+    val imageIndex = remember{
+        mutableIntStateOf(0)
+    }
+
+    val showCatBreeds = remember{
+        mutableStateOf(false)
+    }
+    val breedIndex = remember{
+        mutableIntStateOf(0)
+    }
 
     Column(
         modifier = Modifier
@@ -56,7 +80,9 @@ fun HomeView(
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    RandomCatImage(randomCatImageState.imageData!!)
+                    RandomCatImage(randomCatImageState.imageData!!){
+                        showDialog.value = true
+                    }
                 }
             }
             else -> {
@@ -84,7 +110,10 @@ fun HomeView(
                         Box(
                             modifier = Modifier.width(160.dp)
                         ) {
-                            CatBreedImage(catBreedState.data[item]) {}
+                            CatBreedImage(catBreedState.data[item]) {
+                                showCatBreeds.value = true
+                                breedIndex.intValue = item
+                            }
                         }
                     }
                 }
@@ -109,10 +138,39 @@ fun HomeView(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(randomCatImageListState.imagesData!!.size){ item ->
-                        RandomCatImageComponent(randomCatImageListState.imagesData!![item]) { }
+                        RandomCatImageComponent(
+                            randomCatImageListState.imagesData!![item],
+                        ){
+//                            navController.navigate(Screen.CommonView.route)
+                            showTrendingImageDialog.value = true
+                            imageIndex.intValue = item
+                        }
                     }
                 }
             }
+        }
+
+        if(showDialog.value){
+            RandomCatImageDialog(
+                showDialog,
+                randomCatImageState
+            )
+        }
+
+        if(showTrendingImageDialog.value){
+            TrendingCatImagesDialog(
+                showTrendingImageDialog,
+                randomCatImageListState,
+                imageIndex.intValue
+            )
+        }
+
+        if(showCatBreeds.value){
+            CatBreedDialog(
+                showCatBreeds,
+                catBreedState,
+                breedIndex.intValue
+            )
         }
     }
 }

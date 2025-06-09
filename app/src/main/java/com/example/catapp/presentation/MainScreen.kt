@@ -57,7 +57,6 @@ fun MainScreen() {
             composable(Screen.Fav.route) {
                 FavView(favViewModel)
             }
-
         }
         NavHost(
             navController = navController,

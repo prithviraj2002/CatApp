@@ -5,4 +5,5 @@ sealed class Screen(val route: String) {
     data object Fav: Screen("Fav")
     data object Explore: Screen("Explore")
     data object Funny: Screen("Funny")
+    data object CommonView: Screen("Common")
 }
