@@ -15,6 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -36,8 +37,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.catapp.domain.models.CatBreed
 import com.example.catapp.presentation.explore.model.CatBreedResponse
+import com.example.catapp.presentation.fav.ViewModel.FavViewModel
 import com.example.catapp.presentation.funny.model.CatImageResponse
 import com.example.catapp.presentation.home.model.RandomCatImageResponse
 import java.net.URI
@@ -143,6 +146,8 @@ fun FunnyCatImagesDialog(
     index: Int = 0
 ){
 
+    val favViewModel = hiltViewModel<FavViewModel>()
+
     val pagerState = rememberPagerState(
         initialPage = index,
         pageCount = {
@@ -177,11 +182,22 @@ fun FunnyCatImagesDialog(
             HorizontalPager(
                 state = pagerState
             ) { page ->
-                AsyncImage(
-                    model = funnyImageList.imageData[page].url,
-                    contentDescription = "Random cat image",
-                    modifier = Modifier.fillMaxSize()
-                )
+                Column {
+                    Row {
+                        IconButton(
+                            onClick = {
+                                favViewModel.saveImage(funnyImageList.imageData[page])
+                            }
+                        ) {
+                            Icon(Icons.Default.FavoriteBorder, contentDescription = "")
+                        }
+                    }
+                    AsyncImage(
+                        model = funnyImageList.imageData[page].url,
+                        contentDescription = "Random cat image",
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
             }
         }
     }
@@ -241,6 +257,7 @@ fun CatDetailPage(
     catBreed: CatBreed
 ){
     val uriHandler = LocalUriHandler.current
+    val favViewModel = hiltViewModel<FavViewModel>()
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)
         .verticalScroll(rememberScrollState()),
@@ -256,10 +273,24 @@ fun CatDetailPage(
                 .width(360.dp)
         )
         Box(modifier = Modifier.height(20.dp))
-        Text(catBreed.name, style = TextStyle(
-            fontSize = 24.sp,
-            fontWeight = FontWeight.SemiBold
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ){
+            Text(catBreed.name, style = TextStyle(
+                fontSize = 24.sp,
+                fontWeight = FontWeight.SemiBold
             ))
+            Box(modifier = Modifier.width(12.dp))
+            IconButton(
+                onClick = {
+                    favViewModel.saveBreed(catBreed)
+                }
+            ) {
+                Icon(Icons.Default.FavoriteBorder, contentDescription = "")
+            }
+        }
         Box(modifier = Modifier.height(16.dp))
         Divider()
         Box(modifier = Modifier.height(16.dp))

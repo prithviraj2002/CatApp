@@ -6,9 +6,9 @@ coreKtx = "1.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.9.0"
+lifecycleRuntimeKtx = "2.9.1"
 activityCompose = "1.10.1"
-composeBom = "2025.05.01"
+composeBom = "2025.06.00"
 navigationCompose = "2.9.0"
 retrofit = "2.10.0"
 gson = "2.12.0"
@@ -16,10 +16,13 @@ coil = "3.2.0"
 hilt = "2.51.1"
 androidx-hilt = "1.2.0"
 ksp = "2.1.0-1.0.29"
+uiUtil = "1.8.2"
+room = "2.7.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-ui-util = { module = "androidx.compose.ui:ui-util", version.ref = "uiUtil" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilNetworkOkhttp" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -40,7 +43,11 @@ gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 coil = {module = "io.coil-kt.coil3:coil-compose", version.ref = "coil"}
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
-androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "androidx-hilt" }
+androidx-hilt-navigation-compose = {module = "androidx.hilt:hilt-navigation-compose", version.ref = "androidx-hilt" }
+compose-ui-util = { module = "androidx.compose.ui:ui-util" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -48,4 +55,5 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+room = { id = "androidx.room", version.ref = "room" }
 

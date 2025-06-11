@@ -11,14 +11,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -32,8 +29,6 @@ import androidx.compose.ui.unit.dp
 import com.example.catapp.presentation.components.CatBreedImage
 import com.example.catapp.presentation.components.CatDetailSheet
 import com.example.catapp.presentation.explore.ViewModel.ExploreViewModel
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.catapp.domain.models.CatBreed
 import com.example.catapp.presentation.components.CatBreedDialog
 import com.example.catapp.presentation.components.CatDetailSearchSheet
 import com.example.catapp.presentation.components.CatSearchTile
@@ -82,7 +77,7 @@ fun ExploreView(
                 PullToRefreshBox(
                     isRefreshing = isRefreshing.value,
                     modifier = Modifier
-                        .padding(4.dp)
+                        .padding(16.dp)
                         .fillMaxSize(),
                     onRefresh = {
                         isRefreshing.value = true

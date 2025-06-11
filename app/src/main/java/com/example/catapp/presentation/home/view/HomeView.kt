@@ -62,7 +62,7 @@ fun HomeView(
 
     Column(
         modifier = Modifier
-            .padding(4.dp)
+            .padding(16.dp)
             .verticalScroll(rememberScrollState()),
     ) {
 
@@ -139,7 +139,7 @@ fun HomeView(
                 ) {
                     items(randomCatImageListState.imagesData!!.size){ item ->
                         RandomCatImageComponent(
-                            randomCatImageListState.imagesData!![item],
+                            randomCatImageListState.imagesData!![item].url,
                         ){
 //                            navController.navigate(Screen.CommonView.route)
                             showTrendingImageDialog.value = true

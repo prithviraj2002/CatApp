@@ -32,27 +32,18 @@ fun CatBreedImage(catBreed: CatBreed, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(220.dp)
+            .height(200.dp)
             .clip(RoundedCornerShape(12.dp))
             .clickable {
                 onClick()
             }
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            AsyncImage(
-                model = getCatImageUrl(catBreed.referenceImageId),
-                contentDescription = null,
-                modifier = Modifier.height(200.dp),
-                contentScale = ContentScale.Crop
-            )
-            Text(
-                catBreed.name,
-                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.SemiBold),
-                textAlign = TextAlign.Center
-            )
-        }
+        AsyncImage(
+            model = getCatImageUrl(catBreed.referenceImageId),
+            contentDescription = null,
+            modifier = Modifier.height(200.dp),
+            contentScale = ContentScale.Crop
+        )
     }
 }
 

@@ -5,6 +5,7 @@ import com.example.catapp.domain.models.CatBreedSearch
 import com.example.catapp.domain.models.CatImage
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface CatInterface {
@@ -26,4 +27,8 @@ interface CatInterface {
 
     @GET("images/search")
     suspend fun getRandomCatImageList(@Query("limit") limit: Int = 10): List<CatImage>
+
+    @Headers("x-api-key: ${Endpoints.apiKey}")
+    @GET("breeds/{breedId}")
+    suspend fun getBreedDetails(@Path("breedId") breedId: String = "aege"): CatBreed
 }

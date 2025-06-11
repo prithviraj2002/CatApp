@@ -45,7 +45,7 @@ fun RandomCatImage(
 }
 
 @Composable
-fun RandomCatImageComponent(catImage: CatImage, onClick: () -> Unit) {
+fun RandomCatImageComponent(catImage: String, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .width(120.dp)
@@ -56,7 +56,7 @@ fun RandomCatImageComponent(catImage: CatImage, onClick: () -> Unit) {
             }
     ) {
         AsyncImage(
-            model = catImage.url,
+            model = catImage,
             contentDescription = null,
             modifier = Modifier.height(200.dp),
             contentScale = ContentScale.Crop
