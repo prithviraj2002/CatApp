@@ -140,8 +140,8 @@ fun HomeView(
                     items(randomCatImageListState.imagesData!!.size){ item ->
                         RandomCatImageComponent(
                             randomCatImageListState.imagesData!![item].url,
+                            randomCatImageListState.imagesData!![item].id
                         ){
-//                            navController.navigate(Screen.CommonView.route)
                             showTrendingImageDialog.value = true
                             imageIndex.intValue = item
                         }

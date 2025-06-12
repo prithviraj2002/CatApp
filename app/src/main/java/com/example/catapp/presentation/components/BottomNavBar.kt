@@ -30,7 +30,9 @@ fun BottomNavBar(
                 selected = selectedNavigationIndex.intValue == index,
                 onClick = {
                     selectedNavigationIndex.intValue = index
-                    navController.navigate(item.route)
+                    navController.navigate(item.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
                 },
                 icon = {
                     Icon(imageVector = item.icon, contentDescription = item.title)

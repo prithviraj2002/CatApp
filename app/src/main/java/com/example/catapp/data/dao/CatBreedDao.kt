@@ -15,9 +15,12 @@ interface CatBreedDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveCatBreed(catBreed: CatBreedEntity)
 
-    @Delete
-    suspend fun delCatBreed(catBreed: CatBreedEntity)
+    @Query("DELETE FROM CATBREEDS WHERE CATBREEDID = :catBreedId")
+    suspend fun delCatBreed(catBreedId: String)
 
     @Query("SELECT * FROM catBreeds")
     fun getSavedBreeds(): Flow<List<CatBreedEntity>>
+
+    @Query("SELECT EXISTS(SELECT 1 FROM catBreeds WHERE CATBREEDID = :breedId)")
+    fun isBreedSaved(breedId: String): Flow<Boolean>
 }

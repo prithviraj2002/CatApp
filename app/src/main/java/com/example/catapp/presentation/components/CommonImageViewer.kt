@@ -15,6 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -28,6 +29,8 @@ import androidx.compose.ui.graphics.Color
 import coil3.compose.AsyncImage
 import com.example.catapp.presentation.home.model.RandomCatImageListResponse
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.TextStyle
@@ -41,15 +44,19 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.catapp.domain.models.CatBreed
 import com.example.catapp.presentation.explore.model.CatBreedResponse
 import com.example.catapp.presentation.fav.ViewModel.FavViewModel
+import com.example.catapp.presentation.fav.model.CatBreedEntityResponse
+import com.example.catapp.presentation.fav.model.CatImageEntityResponse
 import com.example.catapp.presentation.funny.model.CatImageResponse
 import com.example.catapp.presentation.home.model.RandomCatImageResponse
-import java.net.URI
 
 @Composable
 fun RandomCatImageDialog(
     showDialog: MutableState<Boolean>,
     randomCatImageState: RandomCatImageResponse
 ){
+    val favViewModel = hiltViewModel<FavViewModel>()
+    val isLiked by favViewModel.isImageSaved(randomCatImageState.imageData!!.id).collectAsState(initial = false)
+
     Dialog(
         onDismissRequest = {
             showDialog.value = false
@@ -78,8 +85,31 @@ fun RandomCatImageDialog(
                 AsyncImage(
                     model = randomCatImageState.imageData!!.url,
                     contentDescription = "Random cat image",
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxWidth().height(500.dp)
                 )
+                Box(modifier = Modifier.height(10.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    IconButton(
+                        onClick = {
+                            if(isLiked){
+                                favViewModel.removeImage(randomCatImageState.imageData.id)
+                            }
+                            else{
+                                favViewModel.saveImage(randomCatImageState.imageData.id, randomCatImageState.imageData.url)
+                            }
+                        }
+                    ) {
+                        if(isLiked){
+                            Icon(Icons.Default.Favorite, contentDescription = "", tint = Color.Red)
+                        }
+                        else{
+                            Icon(Icons.Default.FavoriteBorder, contentDescription = "")
+                        }
+                    }
+                }
             }
         }
     }
@@ -91,6 +121,8 @@ fun TrendingCatImagesDialog(
     trendingImageList: RandomCatImageListResponse,
     index: Int = 0
 ){
+
+    val favViewModel = hiltViewModel<FavViewModel>()
 
     val pagerState = rememberPagerState(
         initialPage = index,
@@ -110,29 +142,59 @@ fun TrendingCatImagesDialog(
         Surface(
             modifier = Modifier.fillMaxSize(),
         ){
-            Column(modifier = Modifier.fillMaxSize()) {
-                Row(modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End) {
-                    IconButton(
-                        onClick = {
-                            showDialog.value = false
-                        }
-                    ) {
-                        Icon(
-                            Icons.Default.Close,
-                            contentDescription = "Close button",
-                        )
-                    }
-                }
-            }
             HorizontalPager(
                 state = pagerState
             ) { page ->
-                AsyncImage(
-                    model = trendingImageList.imagesData!![page].url,
-                    contentDescription = "Random cat image",
-                    modifier = Modifier.fillMaxSize()
-                )
+                val isLiked by favViewModel.isImageSaved(trendingImageList.imagesData!![page].id).collectAsState(initial = false)
+
+                Box(
+                    modifier = Modifier.fillMaxWidth().height(500.dp)
+                ){
+                    AsyncImage(
+                        model = trendingImageList.imagesData!![page].url,
+                        contentDescription = "Random cat image",
+                        modifier = Modifier.height(490.dp).fillMaxWidth(),
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.Bottom
+                    ){
+                        IconButton(
+                            onClick = {
+                                if(isLiked){
+                                    favViewModel.removeImage(trendingImageList.imagesData[page].id)
+                                }
+                                else{
+                                    favViewModel.saveImage(trendingImageList.imagesData[page].id, trendingImageList.imagesData[page].url)
+                                }
+                            }
+                        ) {
+                            if(isLiked){
+                                Icon(Icons.Default.Favorite, contentDescription = "", tint = Color.Red)
+                            }
+                            else{
+                                Icon(Icons.Default.FavoriteBorder, contentDescription = "")
+                            }
+                        }
+                    }
+
+                    Row(modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.Top
+                        ) {
+                        IconButton(
+                            onClick = {
+                                showDialog.value = false
+                            }
+                        ) {
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = "Close button",
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -166,37 +228,58 @@ fun FunnyCatImagesDialog(
         Surface(
             modifier = Modifier.fillMaxSize(),
         ){
-            Row(modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End) {
-                IconButton(
-                    onClick = {
-                        showDialog.value = false
-                    }
-                ) {
-                    Icon(
-                        Icons.Default.Close,
-                        contentDescription = "Close button",
-                    )
-                }
-            }
             HorizontalPager(
                 state = pagerState
             ) { page ->
-                Column {
-                    Row {
-                        IconButton(
-                            onClick = {
-                                favViewModel.saveImage(funnyImageList.imageData[page])
-                            }
-                        ) {
-                            Icon(Icons.Default.FavoriteBorder, contentDescription = "")
-                        }
-                    }
+                val isLiked by favViewModel.isImageSaved(funnyImageList.imageData[page].id).collectAsState(initial = false)
+
+                Box(
+                    modifier = Modifier.fillMaxWidth().height(500.dp),
+                    contentAlignment = Alignment.Center
+                ) {
                     AsyncImage(
                         model = funnyImageList.imageData[page].url,
                         contentDescription = "Random cat image",
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxWidth().height(490.dp)
                     )
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.Bottom
+                    ) {
+                        IconButton(
+                            onClick = {
+                                if(isLiked){
+                                    favViewModel.removeImage(funnyImageList.imageData[page].id)
+                                }
+                                else{
+                                    favViewModel.saveImage(funnyImageList.imageData[page].id, funnyImageList.imageData[page].url)
+                                }
+                            }
+                        ) {
+                            if(isLiked){
+                                Icon(Icons.Default.Favorite, contentDescription = "", tint = Color.Red)
+                            }
+                            else{
+                                Icon(Icons.Default.FavoriteBorder, contentDescription = "")
+                            }
+                        }
+                    }
+                    Row(modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.Top
+                        ) {
+                        IconButton(
+                            onClick = {
+                                showDialog.value = false
+                            }
+                        ) {
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = "Close button",
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -210,7 +293,6 @@ fun CatBreedDialog(
     catBreedList: CatBreedResponse,
     index: Int = 0
 ){
-
     val pagerState = rememberPagerState(
         initialPage = index,
         pageCount = {
@@ -229,41 +311,160 @@ fun CatBreedDialog(
         Surface(
             modifier = Modifier.fillMaxSize(),
         ){
-            Row(modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End) {
-                IconButton(
-                    onClick = {
-                        showDialog.value = false
-                    }
-                ) {
-                    Icon(
-                        Icons.Default.Close,
-                        contentDescription = "Close button",
-                    )
-                }
-            }
             HorizontalPager(
                 state = pagerState
             ) { page ->
-                CatDetailPage(catBreedList.data[page])
+                CatDetailPage(catBreedList.data[page], showDialog)
             }
         }
     }
 }
 
+@Composable
+fun SavedCatBreedDialog(
+    showDialog: MutableState<Boolean>,
+    catBreedList: CatBreedEntityResponse,
+    index: Int = 0
+){
+    val pagerState = rememberPagerState(
+        initialPage = index,
+        pageCount = {
+            catBreedList.catBreedData.size
+        }
+    )
+
+    Dialog(
+        onDismissRequest = {
+            showDialog.value = false
+        },
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false
+        )
+    ) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+        ){
+            HorizontalPager(
+                state = pagerState
+            ) { page ->
+                CatDetailPage(catBreedList.catBreedData.reversed()[page], showDialog)
+            }
+        }
+    }
+}
+
+@Composable
+fun SavedCatImagesDialog(
+    showDialog: MutableState<Boolean>,
+    catImageList: CatImageEntityResponse,
+    index: Int = 0
+){
+
+    val favViewModel = hiltViewModel<FavViewModel>()
+
+    val pagerState = rememberPagerState(
+        initialPage = index,
+        pageCount = {
+            catImageList.imageData.size
+        }
+    )
+
+    Dialog(
+        onDismissRequest = {
+            showDialog.value = false
+        },
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false
+        )
+    ) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+        ){
+            HorizontalPager(
+                state = pagerState
+            ) { page ->
+                val isLiked by favViewModel.isImageSaved(catImageList.imageData.reversed()[page].imageId).collectAsState(initial = false)
+
+                Box(
+                    modifier = Modifier.fillMaxWidth().height(500.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    AsyncImage(
+                        model = catImageList.imageData.reversed()[page].url,
+                        contentDescription = "Random cat image",
+                        modifier = Modifier.fillMaxWidth().height(490.dp)
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.Bottom
+                    ) {
+                        IconButton(
+                            onClick = {
+                                if(isLiked){
+                                    favViewModel.removeImage(catImageList.imageData.reversed()[page].imageId)
+                                }
+                                else{
+                                    favViewModel.saveImage(catImageList.imageData.reversed()[page].imageId, catImageList.imageData.reversed()[page].url)
+                                }
+                            }
+                        ) {
+                            if(isLiked){
+                                Icon(Icons.Default.Favorite, contentDescription = "", tint = Color.Red)
+                            }
+                            else{
+                                Icon(Icons.Default.FavoriteBorder, contentDescription = "")
+                            }
+                        }
+                    }
+                    Row(modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        IconButton(
+                            onClick = {
+                                showDialog.value = false
+                            }
+                        ) {
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = "Close button",
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun CatDetailPage(
-    catBreed: CatBreed
+    catBreed: CatBreed,
+    showDialog: MutableState<Boolean>
 ){
     val uriHandler = LocalUriHandler.current
     val favViewModel = hiltViewModel<FavViewModel>()
+    val isLiked by favViewModel.isBreedSaved(catBreed.id).collectAsState(initial = false)
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)
         .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(modifier = Modifier.height(50.dp))
+        Row(modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End) {
+            IconButton(
+                onClick = {
+                    showDialog.value = false
+                }
+            ) {
+                Icon(
+                    Icons.Default.Close,
+                    contentDescription = "Close button",
+                )
+            }
+        }
         AsyncImage(
             model = getCatImageUrl(catBreed.referenceImageId),
             contentDescription = "Random cat image",
@@ -282,13 +483,23 @@ fun CatDetailPage(
                 fontSize = 24.sp,
                 fontWeight = FontWeight.SemiBold
             ))
-            Box(modifier = Modifier.width(12.dp))
+            Box(modifier = Modifier.width(4.dp))
             IconButton(
                 onClick = {
-                    favViewModel.saveBreed(catBreed)
+                    if(isLiked){
+                        favViewModel.removeBreed(catBreed.id)
+                    }
+                    else{
+                        favViewModel.saveBreed(catBreed)
+                    }
                 }
             ) {
-                Icon(Icons.Default.FavoriteBorder, contentDescription = "")
+                if(isLiked){
+                    Icon(Icons.Default.Favorite, contentDescription = "", tint = Color.Red)
+                }
+                else{
+                    Icon(Icons.Default.FavoriteBorder, contentDescription = "")
+                }
             }
         }
         Box(modifier = Modifier.height(16.dp))

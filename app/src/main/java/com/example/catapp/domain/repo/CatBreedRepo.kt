@@ -14,7 +14,11 @@ class CatBreedRepo @Inject constructor(private val catBreedDao: CatBreedDao) {
         Log.e("Saved breed:", catBreedEntity.breedId)
     }
 
-    suspend fun removeBreed(catBreedEntity: CatBreedEntity) {
-        catBreedDao.delCatBreed(catBreedEntity)
+    suspend fun removeBreed(catBreedId: String) {
+        catBreedDao.delCatBreed(catBreedId)
+    }
+
+    fun isBreedSaved(breedId: String): Flow<Boolean>{
+        return catBreedDao.isBreedSaved(breedId)
     }
 }

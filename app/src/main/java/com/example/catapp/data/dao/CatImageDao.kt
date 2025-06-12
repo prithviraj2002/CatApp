@@ -14,9 +14,12 @@ interface CatImageDao{
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveImage(catImage: CatImageEntity)
 
-    @Delete
-    suspend fun removeFromFav(catImage: CatImageEntity)
+    @Query("DELETE FROM catImages WHERE CATIMAGEID = :imageId")
+    suspend fun removeFromFav(imageId: String)
 
     @Query("SELECT * FROM catImages")
     fun getCatImages(): Flow<List<CatImageEntity>>
+
+    @Query("SELECT EXISTS(SELECT 1 FROM catImages WHERE CATIMAGEID = :imageId)")
+    fun isImageSaved(imageId: String): Flow<Boolean>
 }

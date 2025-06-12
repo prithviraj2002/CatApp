@@ -14,6 +14,7 @@ import com.example.catapp.domain.repo.CatSavedImagesRepo
 import com.example.catapp.presentation.fav.model.CatBreedEntityResponse
 import com.example.catapp.presentation.fav.model.CatImageEntityResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
@@ -50,6 +51,7 @@ class FavViewModel @Inject constructor(
                     _savedImages.update { it.copy(emptyList(), e.message, false) }
                 }
                 .collect { list ->
+                    Log.e("Total saved images", list.size.toString())
                     _savedImages.update {
                         it.copy(list, null, false)
                     }
@@ -80,19 +82,27 @@ class FavViewModel @Inject constructor(
         }
     }
 
-    fun saveImage(catImage: CatImage) {
+    fun saveImage(catImageId: String, catImageUrl: String) {
         viewModelScope.launch {
             try {
                 catImageRepo.saveImage(
                     CatImageEntity(
-                        imageId = catImage.id,
-                        url = catImage.url
+                        imageId = catImageId,
+                        url = catImageUrl
                     )
                 )
             } catch (e: Exception) {
                 Log.e("FavViewModel", "Save error", e)
             }
         }
+    }
+
+    fun isImageSaved(catImageId: String): Flow<Boolean> {
+        return catImageRepo.isImageSaved(catImageId)
+    }
+
+    fun isBreedSaved(breedId: String): Flow<Boolean>{
+        return catBreedRepo.isBreedSaved(breedId)
     }
 
     fun saveBreed(catBreed: CatBreed){
@@ -109,22 +119,20 @@ class FavViewModel @Inject constructor(
         }
     }
 
-    fun removeBreed(catBreed: CatBreed){
+    fun removeBreed(catBreedId: String){
         viewModelScope.launch {
             try {
-                catBreedRepo.removeBreed(CatBreedEntity(
-                    breedId = catBreed.id,
-                ))
+                catBreedRepo.removeBreed(catBreedId)
             } catch (e: Exception) {
                 Log.e("FavViewModel", "Remove error", e)
             }
         }
     }
 
-    fun removeImage(catImageEntity: CatImageEntity) {
+    fun removeImage(catImageId: String) {
         viewModelScope.launch {
             try {
-                catImageRepo.removeImage(catImageEntity)
+                catImageRepo.removeImage(catImageId)
             } catch (e: Exception) {
                 Log.e("FavViewModel", "Remove error", e)
             }

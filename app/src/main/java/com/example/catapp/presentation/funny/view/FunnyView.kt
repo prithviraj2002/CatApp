@@ -28,6 +28,7 @@ import coil3.compose.AsyncImage
 import com.example.catapp.presentation.components.ErrorState
 import com.example.catapp.presentation.components.FunnyCatImagesDialog
 import com.example.catapp.presentation.components.LoadingState
+import com.example.catapp.presentation.components.RandomCatImageComponent
 import com.example.catapp.presentation.components.TrendingCatImagesDialog
 import com.example.catapp.presentation.funny.ViewModel.FunnyViewModel
 
@@ -79,22 +80,11 @@ fun FunnyView(
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
                         items(imageState.imageData.size) { item ->
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(200.dp)
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .clickable {
-                                        showDialog.value = true
-                                        imageIndex.intValue = item
-                                    }
+                            RandomCatImageComponent(
+                                imageState.imageData[item].url, imageState.imageData[item].id
                             ) {
-                                AsyncImage(
-                                    model = imageState.imageData[item].url,
-                                    contentDescription = null,
-                                    modifier = Modifier.height(200.dp),
-                                    contentScale = ContentScale.FillHeight
-                                )
+                                showDialog.value = true
+                                imageIndex.intValue = item
                             }
                         }
                     }
