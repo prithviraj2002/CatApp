@@ -490,7 +490,7 @@ fun CatDetailPage(
                         favViewModel.removeBreed(catBreed.id)
                     }
                     else{
-                        favViewModel.saveBreed(catBreed)
+                        favViewModel.saveBreed(catBreed.id)
                     }
                 }
             ) {

@@ -161,9 +161,6 @@ fun ExploreView(
                                 ) {
                                     breedIndex.intValue = item
                                     showDialog.value = true
-//                                    viewModel.showSheet.value = true
-//                                    viewModel.selectedBreed.value = state.data[item]
-//                                    viewModel.selectedSearchBreed.value = null
                                 }
                             }
                         }

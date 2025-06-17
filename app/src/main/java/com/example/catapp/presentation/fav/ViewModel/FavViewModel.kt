@@ -105,12 +105,12 @@ class FavViewModel @Inject constructor(
         return catBreedRepo.isBreedSaved(breedId)
     }
 
-    fun saveBreed(catBreed: CatBreed){
+    fun saveBreed(catBreedId: String){
         viewModelScope.launch {
             try {
                 catBreedRepo.saveBreed(
                     CatBreedEntity(
-                        breedId = catBreed.id,
+                        breedId = catBreedId,
                     )
                 )
             } catch (e: Exception) {

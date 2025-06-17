@@ -9,9 +9,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -21,6 +24,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -31,7 +35,9 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.stylusHoverIcon
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -64,31 +70,29 @@ fun CatBreedImage(catBreed: CatBreed, onClick: () -> Unit) {
             contentScale = ContentScale.Crop
         )
         Row(
-          modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.End
-        ){
+        ) {
             Box(
                 modifier = Modifier
                     .size(28.dp)
                     .clip(shape = CircleShape)
                     .background(color = Color.LightGray),
                 contentAlignment = Alignment.Center
-            ){
+            ) {
                 IconButton(
                     onClick = {
-                        if(!isLiked){
-                            favViewModel.saveBreed(catBreed)
-                        }
-                        else{
+                        if (!isLiked) {
+                            favViewModel.saveBreed(catBreed.id)
+                        } else {
                             favViewModel.removeBreed(catBreed.id)
                         }
                     }
                 ) {
-                    if (isLiked){
+                    if (isLiked) {
                         Icon(Icons.Default.Favorite, tint = Color.Red, contentDescription = "")
-                    }
-                    else{
+                    } else {
                         Icon(Icons.Default.FavoriteBorder, contentDescription = "")
                     }
                 }
@@ -123,11 +127,52 @@ fun CatDetailSheet(breed: CatBreed) {
 
 @Composable
 fun CatDetailSearchSheet(breed: CatBreedSearch) {
-    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(breed.name, style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold))
-        Box(modifier = Modifier.height(12.dp))
+
+    val uriHandler = LocalUriHandler.current
+
+    val viewModel = hiltViewModel<FavViewModel>()
+    val isLiked by viewModel.isBreedSaved(breed.id).collectAsState(initial = false)
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+            ) {
+            Text(breed.name, style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.SemiBold))
+            IconButton(
+                onClick = {
+                    if (isLiked) {
+                        viewModel.removeBreed(breed.id)
+                    } else {
+                        viewModel.saveBreed(breed.id)
+                    }
+                }
+            ) {
+                if (isLiked) {
+                    Icon(
+                        Icons.Default.Favorite,
+                        contentDescription = "Liked icon",
+                        tint = Color.Red
+                    )
+                } else {
+                    Icon(
+                        Icons.Default.FavoriteBorder,
+                        contentDescription = "Like icon",
+                        tint = Color.Red
+                    )
+                }
+            }
+        }
+        Box(modifier = Modifier.height(16.dp))
         Divider()
-        Box(modifier = Modifier.height(12.dp))
+        Box(modifier = Modifier.height(16.dp))
         AsyncImage(
             modifier = Modifier
                 .height(200.dp)
@@ -135,9 +180,22 @@ fun CatDetailSearchSheet(breed: CatBreedSearch) {
             model = breed.image.url,
             contentDescription = "Cat image"
         )
-        Box(modifier = Modifier.height(12.dp))
-        Text(breed.description)
-        Text(breed.wikipediaUrl)
+        Box(modifier = Modifier.height(16.dp))
+        Text(breed.description, style = TextStyle(fontSize = 20.sp))
+        Box(modifier = Modifier.height(16.dp))
+        TextButton(
+            onClick = {
+                uriHandler.openUri(breed.wikipediaUrl)
+            }
+        ) {
+            Text(
+                "Wikipedia", style = TextStyle(
+                    fontSize = 20.sp,
+                    fontStyle = FontStyle.Italic,
+                    color = Color.Blue
+                )
+            )
+        }
     }
 }
 
