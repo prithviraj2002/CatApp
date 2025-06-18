@@ -26,12 +26,12 @@ This app also had its learning curves, as I was revisiting Jetpack Compose after
 ## Screenshots
 
 <p float="left">
-  <img src="screenshots/home.png" width="150" height="300"/>
-  <img src="screenshots/explore.png" width="150" height="300"/>
-  <img src="screenshots/funny.png" width="150" height="300"/>
-  <img src="screenshots/fav.png" width="150" height="300"/>
-  <img src="screenshots/breed_details.png" width="150" height="300"/>
-  <img src="screenshots/image_details.png" width="150" height="300"/>
+  <img src="[Home](https://github.com/prithviraj2002/CatApp/blob/main/app/src/main/java/com/example/catapp/screenshots/home.png?raw=true)" width="150" height="300"/>
+  <img src="[Explore](https://github.com/prithviraj2002/CatApp/blob/main/app/src/main/java/com/example/catapp/screenshots/explore.png?raw=true)" width="150" height="300"/>
+  <img src="[Funny](https://github.com/prithviraj2002/CatApp/blob/main/app/src/main/java/com/example/catapp/screenshots/funny.png?raw=true)" width="150" height="300"/>
+  <img src="[Favourites](https://github.com/prithviraj2002/CatApp/blob/main/app/src/main/java/com/example/catapp/screenshots/fav.png?raw=true)" width="150" height="300"/>
+  <img src="[Cat breed](https://github.com/prithviraj2002/CatApp/blob/main/app/src/main/java/com/example/catapp/screenshots/breed_details.png?raw=true)" width="150" height="300"/>
+  <img src="[Image details](https://github.com/prithviraj2002/CatApp/blob/main/app/src/main/java/com/example/catapp/screenshots/image_details.png?raw=true)" width="150" height="300"/>
 </p>
 
 ## ✨ Features
