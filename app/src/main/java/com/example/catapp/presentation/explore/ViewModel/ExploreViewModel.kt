@@ -1,17 +1,15 @@
 package com.example.catapp.presentation.explore.ViewModel
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.catapp.data.CatInterface
 import com.example.catapp.domain.models.CatBreed
 import com.example.catapp.domain.models.CatBreedSearch
+import com.example.catapp.domain.repo.CatBreedRepo
 import com.example.catapp.presentation.explore.model.CatBreedResponse
 import com.example.catapp.presentation.explore.model.CatBreedSearchResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -19,10 +17,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ExploreViewModel @Inject constructor(
-    private val catService: CatInterface
+    private val catBreedRepo: CatBreedRepo
 ): ViewModel(){
     val q = mutableStateOf("")
-    private val _catSearchResponse = MutableStateFlow<CatBreedSearchResponse>(
+    private val _catSearchResponse = MutableStateFlow(
         CatBreedSearchResponse(
             emptyList(), null, false
         )
@@ -36,8 +34,6 @@ class ExploreViewModel @Inject constructor(
     private val _catBreedData = MutableStateFlow(CatBreedResponse());
     val catBreedData = _catBreedData.asStateFlow()
 
-    val catBreedOpenData = _catBreedData.value
-
     init {
         getCatBreeds()
     }
@@ -50,14 +46,13 @@ class ExploreViewModel @Inject constructor(
         }
         viewModelScope.launch {
             try {
-                val catBreedList = catService.getCatBreeds(limit = 21)
+                val catBreedList = catBreedRepo.getCatBreeds(limit = 21)
                 _catBreedData.update {
                     it.copy(
                         data = catBreedList, e = null, isLoading = false
                     )
                 }
             } catch (e: Exception) {
-                Log.e("getCatBreeds", e.toString())
                 _catBreedData.update {
                     it.copy(
                         data = emptyList(), e = e, isLoading = false
@@ -76,7 +71,7 @@ class ExploreViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                val response = catService.searchCatBreed(q.value)
+                val response = catBreedRepo.searchCatBreed(q.value)
 
                 _catSearchResponse.update {
                     it.copy(
@@ -84,7 +79,6 @@ class ExploreViewModel @Inject constructor(
                     )
                 }
             } catch (e: Exception) {
-                Log.e("search cat response:", e.toString())
                 _catSearchResponse.update {
                     it.copy(
                         emptyList(), e = e, false

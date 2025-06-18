@@ -6,4 +6,4 @@ data class RandomCatImageResponse(
     val imageData: CatImage? = null,
     val error: Exception? = null,
     val isLoading: Boolean = false
-    )
+)

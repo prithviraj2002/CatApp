@@ -5,6 +5,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.catapp.data.CatInterface
+import com.example.catapp.domain.repo.CatSavedImagesRepo
 import com.example.catapp.presentation.home.model.RandomCatImageListResponse
 import com.example.catapp.presentation.home.model.RandomCatImageResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,13 +18,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val catService: CatInterface
+    private val catImageRepo: CatSavedImagesRepo
 ): ViewModel(){
 
-    val _randomCatImage = MutableStateFlow(RandomCatImageResponse())
+    private val _randomCatImage = MutableStateFlow(RandomCatImageResponse())
     val randomCatImage: StateFlow<RandomCatImageResponse> = _randomCatImage.asStateFlow()
 
-    val _randomCatImageList = MutableStateFlow(RandomCatImageListResponse())
+    private val _randomCatImageList = MutableStateFlow(RandomCatImageListResponse())
     val randomCatImageList = _randomCatImageList.asStateFlow()
 
     init{
@@ -31,7 +32,7 @@ class HomeViewModel @Inject constructor(
         getRandomCatImageList()
     }
 
-    fun getRandomCatImage(){
+    private fun getRandomCatImage(){
         _randomCatImage.update {
             it.copy(
                 imageData = null,
@@ -42,7 +43,7 @@ class HomeViewModel @Inject constructor(
 
         viewModelScope.launch {
             try{
-                val response = catService.getRandomCatImage()
+                val response = catImageRepo.getRandomCatImage()
 
                 _randomCatImage.update {
                     it.copy(
@@ -64,7 +65,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getRandomCatImageList(){
+    private fun getRandomCatImageList(){
         _randomCatImageList.update {
             it.copy(
                 imagesData = null,
@@ -75,7 +76,7 @@ class HomeViewModel @Inject constructor(
 
         viewModelScope.launch {
             try{
-                val response = catService.getRandomCatImageList()
+                val response = catImageRepo.getRandomCatImageList(limit = 10)
 
                 _randomCatImageList.update {
                     it.copy(

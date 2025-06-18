@@ -1,6 +1,5 @@
 package com.example.catapp.presentation.fav.model
 
-import com.example.catapp.domain.models.CatImage
 import com.example.catapp.domain.models.DbModels.CatImageEntity
 
 data class CatImageEntityResponse(

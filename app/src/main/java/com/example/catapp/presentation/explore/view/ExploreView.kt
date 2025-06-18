@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -35,11 +36,10 @@ import com.example.catapp.presentation.components.CatSearchTile
 import com.example.catapp.presentation.components.ErrorState
 import com.example.catapp.presentation.components.LoadingState
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExploreView(
-    viewModel: ExploreViewModel
+    viewModel: ExploreViewModel,
 ){
     val state by viewModel.catBreedData.collectAsState()
 
@@ -77,7 +77,7 @@ fun ExploreView(
                 PullToRefreshBox(
                     isRefreshing = isRefreshing.value,
                     modifier = Modifier
-                        .padding(16.dp)
+                        .padding(horizontal = 16.dp)
                         .fillMaxSize(),
                     onRefresh = {
                         isRefreshing.value = true

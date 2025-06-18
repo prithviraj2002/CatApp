@@ -59,6 +59,7 @@ dependencies {
     //hilt dagger dependencies
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.ui.text.google.fonts)
     ksp(libs.hilt.compiler)
 
     implementation(libs.androidx.ui.util)

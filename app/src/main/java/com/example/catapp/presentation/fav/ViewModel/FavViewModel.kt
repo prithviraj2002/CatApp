@@ -1,12 +1,9 @@
 package com.example.catapp.presentation.fav.ViewModel
 
 import android.util.Log
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.catapp.data.CatInterface
 import com.example.catapp.domain.models.CatBreed
-import com.example.catapp.domain.models.CatImage
 import com.example.catapp.domain.models.DbModels.CatBreedEntity
 import com.example.catapp.domain.models.DbModels.CatImageEntity
 import com.example.catapp.domain.repo.CatBreedRepo
@@ -27,7 +24,6 @@ import javax.inject.Inject
 class FavViewModel @Inject constructor(
     private val catImageRepo: CatSavedImagesRepo,
     private val catBreedRepo: CatBreedRepo,
-    private val catService: CatInterface
 ): ViewModel(){
 
     private val _savedImages = MutableStateFlow(CatImageEntityResponse())
@@ -41,7 +37,7 @@ class FavViewModel @Inject constructor(
         getSavedBreeds()
     }
 
-    fun getSavedImages(){
+    private fun getSavedImages(){
         viewModelScope.launch {
             catImageRepo.getSavedImages()
                 .onStart {
@@ -59,7 +55,7 @@ class FavViewModel @Inject constructor(
         }
     }
 
-    fun getSavedBreeds(){
+    private fun getSavedBreeds(){
         viewModelScope.launch {
             catBreedRepo.getSavedBreeds()
                 .onStart {
@@ -69,12 +65,11 @@ class FavViewModel @Inject constructor(
                     _savedBreeds.update { it.copy(emptyList(), e.message, false) }
                 }
                 .collect { list ->
-                    Log.e("LoadedBreeds", list.size.toString())
                     _savedBreeds.update {
                         val breeds = mutableListOf<CatBreed>();
 
                         for(entity in list){
-                            breeds.add(catService.getBreedDetails(entity.breedId))
+                            breeds.add(catBreedRepo.getBreedDetails(entity.breedId))
                         }
                         it.copy(breeds.toList(), null, false)
                     }
@@ -92,7 +87,7 @@ class FavViewModel @Inject constructor(
                     )
                 )
             } catch (e: Exception) {
-                Log.e("FavViewModel", "Save error", e)
+                throw e
             }
         }
     }

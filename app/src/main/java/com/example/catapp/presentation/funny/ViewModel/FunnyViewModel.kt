@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.catapp.data.CatInterface
+import com.example.catapp.domain.repo.CatSavedImagesRepo
 import com.example.catapp.presentation.funny.model.CatImageResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FunnyViewModel @Inject constructor(
-    private val catService: CatInterface
+    private val catImageRepo: CatSavedImagesRepo
 ): ViewModel() {
 
     private val _catImageState = MutableStateFlow(CatImageResponse())
@@ -31,7 +32,7 @@ class FunnyViewModel @Inject constructor(
 
         viewModelScope.launch {
             try{
-                val response = catService.getCatImages()
+                val response = catImageRepo.getCatImages(limit = 21)
 
                 _catImageState.update { it.copy(
                     response, null, false
