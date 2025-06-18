@@ -26,13 +26,17 @@ This app also had its learning curves, as I was revisiting Jetpack Compose after
 ## Screenshots
 
 <p float="left">
-  <img src="[Home](https://github.com/prithviraj2002/CatApp/blob/main/app/src/main/java/com/example/catapp/screenshots/home.png?raw=true)" width="150" height="300"/>
-  <img src="[Explore](https://github.com/prithviraj2002/CatApp/blob/main/app/src/main/java/com/example/catapp/screenshots/explore.png?raw=true)" width="150" height="300"/>
-  <img src="[Funny](https://github.com/prithviraj2002/CatApp/blob/main/app/src/main/java/com/example/catapp/screenshots/funny.png?raw=true)" width="150" height="300"/>
-  <img src="[Favourites](https://github.com/prithviraj2002/CatApp/blob/main/app/src/main/java/com/example/catapp/screenshots/fav.png?raw=true)" width="150" height="300"/>
-  <img src="[Cat breed](https://raw.githubusercontent.com/prithviraj2002/CatApp/refs/heads/main/app/src/main/java/com/example/catapp/screenshots/breed_details.png)" width="150" height="300"/>
-  <img src="[Image details](https://github.com/prithviraj2002/CatApp/blob/main/app/src/main/java/com/example/catapp/screenshots/image_details.png?raw=true)" width="150" height="300"/>
+  <img src="https://raw.githubusercontent.com/prithviraj2002/CatApp/refs/heads/main/screenshots/home.png" width="220" height="480"/>
+  <img src="https://raw.githubusercontent.com/prithviraj2002/CatApp/refs/heads/main/screenshots/explore.png" width="220" height="480"/>
+  <img src="https://raw.githubusercontent.com/prithviraj2002/CatApp/refs/heads/main/screenshots/funny.png" width="220" height="480"/>
 </p>
+
+<p float="left">
+  <img src="https://raw.githubusercontent.com/prithviraj2002/CatApp/refs/heads/main/screenshots/fav.png" width="220" height="480"/>
+  <img src="https://raw.githubusercontent.com/prithviraj2002/CatApp/refs/heads/main/screenshots/breed_details.png" width="220" height="480"/>
+  <img src="https://raw.githubusercontent.com/prithviraj2002/CatApp/refs/heads/main/screenshots/image_details.png" width="220" height="480"/>
+</p>
+
 
 ## ✨ Features
 
